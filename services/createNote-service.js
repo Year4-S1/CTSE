@@ -1,8 +1,14 @@
 const Note = require("../models/note-model");
+const { deleteNote } = require("./deleteNote-service");
+require("date-utils");
 
 const createNote = async (req, res) => {
   if (req.body) {
-    const note = new Note(req.body);
+    const note = new Note();
+    note.noteTittle = req.body.noteTittle;
+    note.noteMessage = req.body.noteMessage;
+    note.noteDate = new Date().toLocaleDateString();
+    note.noteTime = new Date().toTimeString();
     await note
       .save()
       .then((data) => {
