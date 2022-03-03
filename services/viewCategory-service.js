@@ -10,6 +10,18 @@ const viewCategory = async (req, res) => {
     });
 };
 
+const viewCategoryByUseId = async (req, res) => {
+  var query = { userId: req.params.id };
+  await Category.find({ query })
+    .then((data) => {
+      res.status(200).send({ data: data });
+    })
+    .catch((error) => {
+      res.status(500).send({ error: error.message });
+    });
+};
+
 module.exports = {
   viewCategory,
+  viewCategoryByUseId,
 };

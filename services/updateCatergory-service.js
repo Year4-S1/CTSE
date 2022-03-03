@@ -5,6 +5,7 @@ const updateCategory = async (req, res) => {
     req.params.id,
     {
       $set: {
+        userId: req.body.userId,
         categoryName: req.body.categoryName,
         categoryColor: req.body.categoryColor,
       },

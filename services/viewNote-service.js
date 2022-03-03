@@ -2,6 +2,7 @@ const Note = require("../models/note-model");
 
 const viewNotes = async (req, res) => {
   await Note.find({})
+    .sort({ noteDate: -1 })
     .then((data) => {
       res.status(200).send({ data: data });
     })
