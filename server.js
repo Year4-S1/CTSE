@@ -5,6 +5,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 
 const noteController = require("./controllers/note-controller");
+const categoryController = require("./controllers/category-controller");
 
 dotenv.config();
 const app = express();
@@ -40,3 +41,4 @@ app.route("/").get((req, res) => {
 });
 
 app.use("/note", noteController());
+app.use("/category", categoryController());

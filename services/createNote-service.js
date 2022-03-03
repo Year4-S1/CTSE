@@ -1,5 +1,4 @@
 const Note = require("../models/note-model");
-const { deleteNote } = require("./deleteNote-service");
 require("date-utils");
 
 const createNote = async (req, res) => {

@@ -1,12 +1,12 @@
-const Note = require("../models/note-model");
+const Category = require("../models/category-model");
 
-const deleteNote = async (req, res) => {
+const deleteCategory = async (req, res) => {
   //check if the req body is empty
   const id = req.params.id;
   console.log(id);
 
   //delete product data from database
-  await Note.findByIdAndDelete(id)
+  await Category.findByIdAndDelete(id)
     .then((response) => {
       console.log("Data sucessfully deleted from the mongo db!");
 
@@ -20,5 +20,5 @@ const deleteNote = async (req, res) => {
 };
 
 module.exports = {
-  deleteNote,
+  deleteCategory,
 };
