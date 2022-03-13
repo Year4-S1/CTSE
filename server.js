@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 
+
 const noteController = require("./controllers/note-controller");
 const categoryController = require("./controllers/category-controller");
 const userController = require("./controllers/user-controller");
@@ -15,6 +16,8 @@ app.use(bodyParser.json());
 
 const PORT = process.env.PORT || 8080;
 const MONGODB_URI = process.env.MONGODB_URI;
+const JWT_KEY=process.env.JWT_KEY;
+
 
 mongoose.connect(
   MONGODB_URI,
@@ -34,7 +37,7 @@ mongoose.connection.once("open", () => {
 });
 
 app.listen(PORT, () => {
-  console.log("Server is Up and Running on PORT ${PORT}");
+  console.log(`Server is Up and Running on PORT ` + PORT);
 });
 
 app.route("/").get((req, res) => {
