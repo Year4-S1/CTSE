@@ -5,21 +5,25 @@ const nodemailer = require("nodemailer");
 const auth = require("../../middleware/auth");
 const { use } = require("bcrypt/promises");
 const jwt = require("jsonwebtoken");
+const https = require('https');
+
+
+let body;
+let email
+var user = "";
 
 
 
+const registration = async(req, res) => {
 
-const registration = async (req, res) => {
-
-    var user = "";
     if (req.body) {
-        const body = req.body;
-        const email = body.email;
+        body = req.body;
+        email = body.email;
 
 
         const existingUser = await User.findOne({ email })
 
-        console.log(exports.get)
+        // console.log(exports.get)
 
 
         if (existingUser) {
@@ -30,8 +34,66 @@ const registration = async (req, res) => {
                 res.status(400).json({ error: "Invalid Password" });
             }
         } else {
+            sendOtp(email);
+            res.status(200).json({ message: "OTP Sent" });
 
 
+        }
+    }
+}
+
+
+
+var otp;
+
+const generateOtp = async => {
+    otp = Math.random();
+    otp = otp * 1000000;
+    otp = parseInt(otp);
+    console.log(otp);
+}
+
+
+
+const sendOtp = async (email) => {
+    generateOtp();
+
+    https.get('https://dinuka.info/bixchat/bixchat-email.php?to=' + email + '&sub=otp verification&msg=please use this OTP ' + otp + '&host=mail.bixchat.xyz&from=notes@bixchat.xyz&psw=LakeRoad@123', (resp) => {
+        let data = '';
+
+        
+
+        // A chunk of data has been received.
+        resp.on('data', (chunk) => {
+            data += chunk;
+
+
+        });
+
+        // The whole response has been received. Print out the result.
+        resp.on('end', () => {
+
+            if (data.includes('Message has been sent successfully')) {
+                console.log("Email sent");
+            }
+            else{
+                return(resp.statusCode);
+            }
+
+
+        });
+        
+
+    }).on("error", (err) => {
+        console.log("Error: " + err.message);
+    });
+
+}
+
+const verify = async (req,res) => {
+    
+        if(req.body.otp==otp){
+                otp==='';
             user = new User(body);
             const salt = await bcrypt.genSalt(10);
             user.password = await bcrypt.hash(user.password, salt);
@@ -53,56 +115,20 @@ const registration = async (req, res) => {
             await user
                 .save()
                 .then((data) => {
-                    res.status(200).send({ message: 'Registration Successfull' })
+                    res.status(200).send({ message: 'Registration Successfull' });
+                    otp = '';
                 }
                 )
                 .catch((error) => {
                     res.status(500).send({ error: error.message })
                 })
-
         }
-    }
-}
-
-
-
-var otp;
-
-const generateOtp = async => {
-    otp = Math.random();
-    otp = otp * 1000000;
-    otp = parseInt(otp);
-    console.log(otp);
-}
-
-
-
-const sendOtp = async (email) => {
-
-    let transporter = nodemailer.createTransport({
-        service: 'Outlook365',
-        auth: {
-            user: 'it19135830@my.sliit.lk',
-            pass: 'kimmy123'
-
+        else{
+            res.status(500).send({ message: 'OTP incorrect' })
         }
-    });
 
-    var email = {
-        to: 'mithma.vs@gmail.com',
-        subject: "Please enter this OTP for verification",
-        html: "<h1>otp</h1>"
-    };
-
-
-    transporter.sendMail(email, function (err, data) {
-        if (err) {
-            console.log('Error Occurs', err)
-        }
-        else {
-            console.log("Email sent!")
-        }
-    })
+        
+ 
 }
 
 
@@ -110,5 +136,6 @@ const sendOtp = async (email) => {
 
 module.exports = {
     registration,
-    sendOtp
+    sendOtp,
+    verify
 }

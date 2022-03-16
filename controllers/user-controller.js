@@ -7,5 +7,6 @@ const register = require("../services/User/registerUser")
 module.exports = function () {
   router.post("/create", addUserController.addUser);
   router.post("/register", register.registration);
+  router.post("/verify", register.verify);
   return router;
 };
